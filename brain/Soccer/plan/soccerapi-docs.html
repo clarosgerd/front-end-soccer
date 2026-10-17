@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoccerApi — Flujos del sistema y mockups</title>
+<style>
+  :root {
+    --ink: #0f172a;
+    --ink-soft: #475569;
+    --ink-faint: #94a3b8;
+    --line: #e2e8f0;
+    --line-strong: #cbd5e1;
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --blue: #2563eb;    --blue-bg: #eff6ff;
+    --purple: #7c3aed;  --purple-bg: #f5f3ff;
+    --teal: #0d9488;    --teal-bg: #f0fdfa;
+    --coral: #e11d48;   --coral-bg: #fff1f2;
+    --amber: #b45309;   --amber-bg: #fffbeb;
+    --green: #047857;   --green-bg: #ecfdf5;
+    --gray-bg: #f1f5f9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.5;
+  }
+
+  .page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  header.cover {
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  header.cover .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+
+  header.cover h1 {
+    font-size: 32px;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+
+  header.cover p.sub {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin: 0 0 20px;
+    max-width: 640px;
+  }
+
+  nav.toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  nav.toc a {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  nav.toc a:hover { border-color: var(--line-strong); color: var(--ink); }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+
+  section .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+
+  section h2 {
+    font-size: 21px;
+    margin: 0 0 6px;
+  }
+
+  section p.desc {
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    max-width: 680px;
+    margin: 0 0 24px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px;
+  }
+
+  .diagram-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  /* --- Diagram node styles --- */
+  .node rect { stroke-width: 1; }
+  .node text.th { font-size: 12.5px; font-weight: 600; fill: var(--ink); }
+  .node text.ts { font-size: 10.5px; fill: var(--ink-soft); }
+  .arr { stroke: var(--ink-faint); stroke-width: 1.5; fill: none; }
+
+  .n-blue rect   { fill: var(--blue-bg);   stroke: var(--blue); }
+  .n-purple rect { fill: var(--purple-bg); stroke: var(--purple); }
+  .n-teal rect   { fill: var(--teal-bg);   stroke: var(--teal); }
+  .n-coral rect  { fill: var(--coral-bg);  stroke: var(--coral); }
+  .n-amber rect  { fill: var(--amber-bg);  stroke: var(--amber); }
+  .n-gray rect   { fill: var(--gray-bg);   stroke: var(--line-strong); }
+  .n-pink rect   { fill: #fdf2f8; stroke: #db2777; }
+
+  /* --- Mockup styles --- */
+  .mockup { font-size: 13.5px; }
+  .mockup .m-title { font-weight: 600; font-size: 15px; margin: 0; }
+  .mockup .m-sub { font-size: 12.5px; color: var(--ink-soft); margin: 0; }
+
+  .badge { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 999px; }
+  .badge-warning { background: var(--amber-bg); color: var(--amber); }
+  .badge-success { background: var(--green-bg); color: var(--green); }
+  .badge-gray    { background: var(--gray-bg); color: var(--ink-soft); }
+
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0 20px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  .tab { font-size: 12.5px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line); color: var(--ink-soft); }
+  .tab.active { background: var(--gray-bg); border-color: var(--line-strong); color: var(--ink); font-weight: 500; }
+  .tab.disabled { opacity: .45; }
+
+  .group-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .group-card { background: var(--gray-bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .group-card .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .group-card table { width: 100%; font-size: 12px; border-collapse: collapse; margin-bottom: 12px; }
+  .group-card table td { padding: 5px 0; }
+  .group-card .matches { border-top: 1px solid var(--line); padding-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .group-card .match-row { display: flex; justify-content: space-between; font-size: 12px; }
+
+  .knockout-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .knockout-cols .col-label { font-size: 12px; color: var(--ink-soft); margin: 0 0 8px; }
+  .k-match { background: var(--gray-bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 12px; }
+  .k-match.tbd { background: var(--surface); border-style: dashed; color: var(--ink-faint); }
+  .k-match .row { display: flex; justify-content: space-between; }
+  .k-match .muted { color: var(--ink-faint); }
+
+  .admin-list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+  .admin-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .admin-row:last-child { border-bottom: none; }
+  .admin-row .name { font-size: 13px; margin: 0; }
+  .admin-row .meta { font-size: 11.5px; color: var(--ink-faint); margin: 2px 0 0; }
+  .btn { font-size: 12px; padding: 5px 12px; border-radius: 7px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); }
+  .btn.primary { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .btn.danger { color: var(--coral); border-color: #fecdd3; }
+
+  .rank { display: inline-flex; align-items: center; justify-content: center; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--green-bg); color: var(--green); font-weight: 600; }
+
+  footer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="cover">
+    <div class="eyebrow">SoccerApi · Documentación de producto</div>
+    <h1>Flujos del sistema y mockups de pantalla</h1>
+    <p class="sub">
+      Diagramas de los cuatro flujos principales (setup, predicción/scoring, pool de premios,
+      multi-fase/bracket) y los mockups de las dos pantallas más complejas del frontend:
+      el bracket público y la vista de administración de grupos/avances.
+    </p>
+    <nav class="toc">
+      <a href="#flujo-setup">1. Setup</a>
+      <a href="#flujo-prediccion">2. Predicción y scoring</a>
+      <a href="#flujo-pool">3. Pool de premios</a>
+      <a href="#flujo-multifase-setup">4. Multi-fase: configuración</a>
+      <a href="#flujo-multifase-avance">5. Multi-fase: avance entre fases</a>
+      <a href="#mockup-bracket">6. Mockup: bracket público</a>
+      <a href="#mockup-admin">7. Mockup: admin de bracket</a>
+    </nav>
+  </header>
+
+  <!-- 1. FLUJO SETUP -->
+  <section id="flujo-setup">
+    <div class="section-label">Flujo 1 de 5</div>
+    <h2>Setup inicial</h2>
+    <p class="desc">Autenticación, creación del torneo con sus fases, creación del grupo con su scoring/pool configurado, e invitación de miembros.</p>
+    <div class="card">
+      <svg width="100%" viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <g class="node n-blue"><rect x="10" y="30" width="140" height="56" rx="8"/>
+          <text class="th" x="80" y="50" text-anchor="middle">Login / registro</text>
+          <text class="ts" x="80" y="68" text-anchor="middle">Sanctum bearer token</text></g>
+        <line x1="150" y1="58" x2="182" y2="58" class="arr" marker-end="url(#a1)"/>
+        <g class="node n-purple"><rect x="182" y="30" width="140" height="56" rx="8"/>
+          <text class="th" x="252" y="50" text-anchor="middle">Crear torneo</text>
+          <text class="ts" x="252" y="68" text-anchor="middle">+ stages (bulk)</text></g>
+        <line x1="322" y1="58" x2="354" y2="58" class="arr" marker-end="url(#a1)"/>
+        <g class="node n-teal"><rect x="354" y="30" width="140" height="56" rx="8"/>
+          <text class="th" x="424" y="50" text-anchor="middle">Crear grupo</text>
+          <text class="ts" x="424" y="68" text-anchor="middle">scoring + pool config</text></g>
+        <line x1="494" y1="58" x2="526" y2="58" class="arr" marker-end="url(#a1)"/>
+        <g class="node n-teal"><rect x="526" y="30" width="84" height="56" rx="8"/>
+          <text class="th" x="568" y="50" text-anchor="middle">Invitar</text>
+          <text class="ts" x="568" y="68" text-anchor="middle">miembros</text></g>
+      </svg>
+      <p class="diagram-note">Los valores default de scoring (10/5/3/15 puntos, multiplicadores 1.5x–10x) se cargan automáticamente vía <code>POST /group/first</code>, editables después.</p>
+    </div>
+  </section>
+
+  <!-- 2. FLUJO PREDICCION Y SCORING -->
+  <section id="flujo-prediccion">
+    <div class="section-label">Flujo 2 de 5</div>
+    <h2>Predicción y scoring</h2>
+    <p class="desc">Un miembro predice dentro de la ventana permitida, el match termina, el sistema calcula los puntos automáticamente y el leaderboard se actualiza.</p>
+    <div class="card">
+      <svg width="100%" viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <g class="node n-coral"><rect x="0" y="30" width="150" height="56" rx="8"/>
+          <text class="th" x="75" y="50" text-anchor="middle">Miembro predice</text>
+          <text class="ts" x="75" y="68" text-anchor="middle">match scheduled, &gt;30min</text></g>
+        <line x1="150" y1="58" x2="182" y2="58" class="arr" marker-end="url(#a2)"/>
+        <g class="node n-gray"><rect x="182" y="30" width="120" height="56" rx="8"/>
+          <text class="th" x="242" y="50" text-anchor="middle">Match termina</text>
+          <text class="ts" x="242" y="68" text-anchor="middle">status: finished</text></g>
+        <line x1="302" y1="58" x2="334" y2="58" class="arr" marker-end="url(#a2)"/>
+        <g class="node n-amber"><rect x="334" y="30" width="150" height="56" rx="8"/>
+          <text class="th" x="409" y="50" text-anchor="middle">Scoring automático</text>
+          <text class="ts" x="409" y="68" text-anchor="middle">puntos × multiplicador</text></g>
+        <line x1="484" y1="58" x2="516" y2="58" class="arr" marker-end="url(#a2)"/>
+        <g class="node n-amber"><rect x="516" y="30" width="104" height="56" rx="8"/>
+          <text class="th" x="568" y="50" text-anchor="middle">Leaderboard</text>
+          <text class="ts" x="568" y="68" text-anchor="middle">se actualiza</text></g>
+      </svg>
+      <p class="diagram-note">El multiplicador depende del stage del match (<code>is_knockout</code>, <code>stage_order</code>) — por eso el front necesita conocer el stage antes de mostrar cuántos puntos vale una predicción.</p>
+    </div>
+  </section>
+
+  <!-- 3. FLUJO POOL -->
+  <section id="flujo-pool">
+    <div class="section-label">Flujo 3 de 5</div>
+    <h2>Pool de premios</h2>
+    <p class="desc">Corre en paralelo al scoring: los miembros contribuyen, el admin distribuye el 60/30/10 según el leaderboard final, y los ganadores reciben notificación.</p>
+    <div class="card">
+      <svg width="100%" viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <g class="node n-pink"><rect x="20" y="30" width="150" height="56" rx="8"/>
+          <text class="th" x="95" y="50" text-anchor="middle">Miembros contribuyen</text>
+          <text class="ts" x="95" y="68" text-anchor="middle">POST /pool, bet_amount</text></g>
+        <line x1="170" y1="58" x2="202" y2="58" class="arr" marker-end="url(#a3)"/>
+        <g class="node n-gray"><rect x="202" y="30" width="130" height="56" rx="8"/>
+          <text class="th" x="267" y="50" text-anchor="middle">Admin distribuye</text>
+          <text class="ts" x="267" y="68" text-anchor="middle">solo el creador</text></g>
+        <line x1="332" y1="58" x2="364" y2="58" class="arr" marker-end="url(#a3)"/>
+        <g class="node n-pink"><rect x="364" y="30" width="150" height="56" rx="8"/>
+          <text class="th" x="439" y="50" text-anchor="middle">Reparto 60/30/10</text>
+          <text class="ts" x="439" y="68" text-anchor="middle">según leaderboard</text></g>
+        <line x1="514" y1="58" x2="546" y2="58" class="arr" marker-end="url(#a3)"/>
+        <g class="node n-pink"><rect x="546" y="30" width="74" height="56" rx="8"/>
+          <text class="th" x="583" y="50" text-anchor="middle">Email</text>
+          <text class="ts" x="583" y="68" text-anchor="middle">ganadores</text></g>
+      </svg>
+      <p class="diagram-note">La distribución solo puede iniciarla el creador del grupo — un 403 acá se interpreta como "no sos admin", no como límite de plan.</p>
+    </div>
+  </section>
+
+  <!-- 4. MULTIFASE SETUP -->
+  <section id="flujo-multifase-setup">
+    <div class="section-label">Flujo 4 de 5</div>
+    <h2>Multi-fase: configuración</h2>
+    <p class="desc">Se crean los stages del torneo, se crean los grupos de torneo dentro de un stage, se les asignan equipos y el admin aprueba cada grupo.</p>
+    <div class="card">
+      <svg width="100%" viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <g class="node n-purple"><rect x="10" y="30" width="140" height="56" rx="8"/>
+          <text class="th" x="80" y="50" text-anchor="middle">Crear stages</text>
+          <text class="ts" x="80" y="68" text-anchor="middle">grupos, octavos...</text></g>
+        <line x1="150" y1="58" x2="182" y2="58" class="arr" marker-end="url(#a4)"/>
+        <g class="node n-teal"><rect x="182" y="30" width="140" height="56" rx="8"/>
+          <text class="th" x="252" y="50" text-anchor="middle">Crear grupos</text>
+          <text class="ts" x="252" y="68" text-anchor="middle">Grupo A, B, C...</text></g>
+        <line x1="322" y1="58" x2="354" y2="58" class="arr" marker-end="url(#a4)"/>
+        <g class="node n-teal"><rect x="354" y="30" width="140" height="56" rx="8"/>
+          <text class="th" x="424" y="50" text-anchor="middle">Asignar equipos</text>
+          <text class="ts" x="424" y="68" text-anchor="middle">team_ids al grupo</text></g>
+        <line x1="494" y1="58" x2="526" y2="58" class="arr" marker-end="url(#a4)"/>
+        <g class="node n-gray"><rect x="526" y="30" width="104" height="56" rx="8"/>
+          <text class="th" x="578" y="50" text-anchor="middle">Admin aprueba</text>
+          <text class="ts" x="578" y="68" text-anchor="middle">status: approved</text></g>
+      </svg>
+      <p class="diagram-note">La asignación de equipos se hace desde <code>/tournaments/:id/groups-admin</code> en el frontend, con selección múltiple.</p>
+    </div>
+  </section>
+
+  <!-- 5. MULTIFASE AVANCE -->
+  <section id="flujo-multifase-avance">
+    <div class="section-label">Flujo 5 de 5</div>
+    <h2>Multi-fase: avance entre fases</h2>
+    <p class="desc">Se define una regla de avance, los partidos terminan, el sistema sugiere qué equipos avanzan, y el admin confirma antes de que el bracket público se actualice.</p>
+    <div class="card">
+      <svg width="100%" viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="a5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <g class="node n-coral"><rect x="0" y="30" width="140" height="56" rx="8"/>
+          <text class="th" x="70" y="50" text-anchor="middle">Regla de avance</text>
+          <text class="ts" x="70" y="68" text-anchor="middle">top_n / manual</text></g>
+        <line x1="140" y1="58" x2="172" y2="58" class="arr" marker-end="url(#a5)"/>
+        <g class="node n-gray"><rect x="172" y="30" width="130" height="56" rx="8"/>
+          <text class="th" x="237" y="50" text-anchor="middle">Partidos terminan</text>
+          <text class="ts" x="237" y="68" text-anchor="middle">standings se actualizan</text></g>
+        <line x1="302" y1="58" x2="334" y2="58" class="arr" marker-end="url(#a5)"/>
+        <g class="node n-amber"><rect x="334" y="30" width="140" height="56" rx="8"/>
+          <text class="th" x="404" y="50" text-anchor="middle">Sistema sugiere</text>
+          <text class="ts" x="404" y="68" text-anchor="middle">equipos que avanzan</text></g>
+        <line x1="474" y1="58" x2="506" y2="58" class="arr" marker-end="url(#a5)"/>
+        <g class="node n-amber"><rect x="506" y="30" width="134" height="56" rx="8"/>
+          <text class="th" x="573" y="50" text-anchor="middle">Admin confirma</text>
+          <text class="ts" x="573" y="68" text-anchor="middle">bracket actualizado</text></g>
+      </svg>
+      <p class="diagram-note">"Sugerir" y "confirmar" son pasos separados a propósito: casos ambiguos (ej. mejores terceros empatados) necesitan intervención humana.</p>
+    </div>
+  </section>
+
+  <!-- 6. MOCKUP BRACKET PUBLICO -->
+  <section id="mockup-bracket">
+    <div class="section-label">Mockup 1 de 2</div>
+    <h2>Bracket público</h2>
+    <p class="desc">Vista que consume cualquier usuario (sin necesidad de ser admin) para seguir el torneo: selector de fase, standings por grupo, partidos, y el estado de la eliminación directa.</p>
+    <div class="card mockup">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div>
+          <p class="m-title">Copa Mundial 2026</p>
+          <p class="m-sub">12 grupos · 48 equipos</p>
+        </div>
+        <span class="badge badge-warning">Torneo promocional · 5 días restantes</span>
+      </div>
+
+      <div class="tabs">
+        <span class="tab active">Fase de grupos</span>
+        <span class="tab">Eliminación directa</span>
+        <span class="tab disabled">Semifinal</span>
+        <span class="tab disabled">Final</span>
+      </div>
+
+      <div class="group-grid">
+        <div class="group-card">
+          <div class="head">
+            <p style="margin:0;font-weight:500;">Grupo A</p>
+            <span class="badge badge-success">Aprobado</span>
+          </div>
+          <table>
+            <tr style="color:var(--ink-soft)"><td>Equipo</td><td style="text-align:right">Pts</td><td style="text-align:right">Dif</td></tr>
+            <tr style="border-top:1px solid var(--line)"><td>1. Brasil</td><td style="text-align:right">9</td><td style="text-align:right">+5</td></tr>
+            <tr><td>2. Argentina</td><td style="text-align:right">6</td><td style="text-align:right">+2</td></tr>
+            <tr style="color:var(--ink-faint)"><td>3. Uruguay</td><td style="text-align:right">3</td><td style="text-align:right">-1</td></tr>
+            <tr style="color:var(--ink-faint)"><td>4. Chile</td><td style="text-align:right">0</td><td style="text-align:right">-6</td></tr>
+          </table>
+          <div class="matches">
+            <div class="match-row"><span>Brasil vs Argentina</span><span style="color:var(--ink-soft)">2-1</span></div>
+            <div class="match-row"><span>Uruguay vs Chile</span><span class="badge badge-warning">En vivo</span></div>
+          </div>
+        </div>
+
+        <div class="group-card">
+          <div class="head">
+            <p style="margin:0;font-weight:500;">Grupo B</p>
+            <span class="badge badge-warning">Pendiente</span>
+          </div>
+          <table>
+            <tr style="color:var(--ink-soft)"><td>Equipo</td><td style="text-align:right">Pts</td><td style="text-align:right">Dif</td></tr>
+            <tr style="border-top:1px solid var(--line)"><td>1. Francia</td><td style="text-align:right">4</td><td style="text-align:right">+3</td></tr>
+            <tr><td>2. Alemania</td><td style="text-align:right">4</td><td style="text-align:right">+1</td></tr>
+            <tr style="color:var(--ink-faint)"><td>3. España</td><td style="text-align:right">3</td><td style="text-align:right">0</td></tr>
+            <tr style="color:var(--ink-faint)"><td>4. Polonia</td><td style="text-align:right">0</td><td style="text-align:right">-4</td></tr>
+          </table>
+          <div class="matches">
+            <div class="match-row"><span>Francia vs Alemania</span><span style="color:var(--ink-soft)">1-1</span></div>
+            <div class="match-row"><span>España vs Polonia</span><span style="color:var(--ink-faint)">Programado 20:00</span></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="m-sub" style="margin-top:20px;font-weight:500;">Vista "Eliminación directa" (tab siguiente)</p>
+      <div class="knockout-cols" style="margin-top:8px;">
+        <div>
+          <p class="col-label">Dieciseisavos</p>
+          <div class="k-match">
+            <div class="row"><span>Brasil</span><span>2</span></div>
+            <div class="row muted"><span>Suecia</span><span>0</span></div>
+          </div>
+          <div class="k-match">
+            <div class="row"><span>Francia</span><span>?</span></div>
+            <div class="row"><span>Japón</span><span>?</span></div>
+          </div>
+        </div>
+        <div>
+          <p class="col-label">Octavos</p>
+          <div class="k-match tbd">Ganador dieciseisavos</div>
+          <div class="k-match tbd">Por definir</div>
+        </div>
+        <div>
+          <p class="col-label">Cuartos</p>
+          <div class="k-match tbd">Por definir</div>
+        </div>
+      </div>
+      <p class="diagram-note">Las casillas con borde punteado ("por definir") son avances todavía no confirmados (<code>tournamentadvancement.confirmed = false</code>).</p>
+    </div>
+  </section>
+
+  <!-- 7. MOCKUP ADMIN -->
+  <section id="mockup-admin">
+    <div class="section-label">Mockup 2 de 2</div>
+    <h2>Admin: aprobación de grupos y confirmación de avances</h2>
+    <p class="desc">Pantalla exclusiva del admin del torneo: aprobar/rechazar grupos pendientes, y confirmar (uno por uno o todos) los avances que el sistema sugirió.</p>
+    <div class="card mockup">
+      <p class="m-title">Administrar Copa Mundial 2026</p>
+      <p class="m-sub" style="margin-bottom:20px;">Fase de grupos</p>
+
+      <p class="m-sub" style="font-weight:500;margin-bottom:8px;">Grupos pendientes de aprobación</p>
+      <div class="admin-list" style="margin-bottom:28px;">
+        <div class="admin-row">
+          <div>
+            <p class="name">Grupo B</p>
+            <p class="meta">Francia, Alemania, España, Polonia</p>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <span class="btn primary">Aprobar</span>
+            <span class="btn danger">Rechazar</span>
+          </div>
+        </div>
+        <div class="admin-row">
+          <div>
+            <p class="name">Grupo F</p>
+            <p class="meta">Portugal, Marruecos, Corea, Ghana</p>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <span class="btn primary">Aprobar</span>
+            <span class="btn danger">Rechazar</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <p class="m-sub" style="font-weight:500;">Avances sugeridos · Grupo A → dieciseisavos</p>
+        <span class="btn primary">Confirmar todos</span>
+      </div>
+      <div class="admin-list">
+        <div class="admin-row">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="rank">1°</span>
+            <span class="name">Brasil</span>
+            <span class="meta">9 pts · +5 dif</span>
+          </div>
+          <span class="btn">Confirmar</span>
+        </div>
+        <div class="admin-row">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="rank">2°</span>
+            <span class="name">Argentina</span>
+            <span class="meta">6 pts · +2 dif</span>
+          </div>
+          <span class="btn">Confirmar</span>
+        </div>
+      </div>
+      <p class="diagram-note">"Regla aplicada: top_n = 2. Uruguay y Chile no avanzan." — nota que le da contexto al admin sobre por qué el sistema sugirió esos equipos y no otros.</p>
+    </div>
+  </section>
+
+  <footer>
+    SoccerApi · Documentación generada para el equipo de frontend · Julio 2026
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<h2 class="sr-only">Mockup de la pantalla de bracket: selector de fase, tabla de posiciones y partidos por grupo, y vista de eliminación directa</h2>
+
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+  <div>
+    <p style="font-weight:500;font-size:16px;margin:0">Copa Mundial 2026</p>
+    <p style="font-size:13px;color:var(--text-secondary);margin:0">12 grupos · 48 equipos</p>
+  </div>
+  <span style="background:var(--bg-warning);color:var(--text-warning);font-size:12px;padding:4px 12px;border-radius:var(--radius)">Torneo promocional · 5 días restantes</span>
+</div>
+
+<div id="stage-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;border-bottom:0.5px solid var(--border);padding-bottom:12px">
+  <button onclick="showView('grupos')" data-tab="grupos" style="font-size:13px;padding:6px 14px">Fase de grupos</button>
+  <button onclick="showView('knockout')" data-tab="knockout" style="font-size:13px;padding:6px 14px">Eliminación directa</button>
+  <button disabled style="font-size:13px;padding:6px 14px;opacity:0.5">Semifinal</button>
+  <button disabled style="font-size:13px;padding:6px 14px;opacity:0.5">Final</button>
+</div>
+
+<div id="view-grupos">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+
+<div style="background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <p style="font-weight:500;font-size:14px;margin:0">Grupo A</p>
+    <span style="background:var(--bg-success);color:var(--text-success);font-size:11px;padding:2px 8px;border-radius:var(--radius)">Aprobado</span>
+  </div>
+  <table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:12px">
+    <tr style="color:var(--text-secondary)"><td style="padding:4px 0">Equipo</td><td style="text-align:right">Pts</td><td style="text-align:right">Dif</td></tr>
+    <tr style="border-top:0.5px solid var(--border)"><td style="padding:6px 0">1. Brasil</td><td style="text-align:right">9</td><td style="text-align:right">+5</td></tr>
+    <tr><td style="padding:6px 0">2. Argentina</td><td style="text-align:right">6</td><td style="text-align:right">+2</td></tr>
+    <tr><td style="padding:6px 0;color:var(--text-muted)">3. Uruguay</td><td style="text-align:right;color:var(--text-muted)">3</td><td style="text-align:right;color:var(--text-muted)">-1</td></tr>
+    <tr><td style="padding:6px 0;color:var(--text-muted)">4. Chile</td><td style="text-align:right;color:var(--text-muted)">0</td><td style="text-align:right;color:var(--text-muted)">-6</td></tr>
+  </table>
+  <div style="border-top:0.5px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;justify-content:space-between;font-size:12px">
+      <span>Brasil vs Argentina</span>
+      <span style="color:var(--text-secondary)">2-1</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:12px">
+      <span>Uruguay vs Chile</span>
+      <span style="background:var(--bg-warning);color:var(--text-warning);font-size:11px;padding:1px 6px;border-radius:var(--radius)">En vivo</span>
+    </div>
+  </div>
+</div>
+
+<div style="background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <p style="font-weight:500;font-size:14px;margin:0">Grupo B</p>
+    <span style="background:var(--bg-warning);color:var(--text-warning);font-size:11px;padding:2px 8px;border-radius:var(--radius)">Pendiente</span>
+  </div>
+  <table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:12px">
+    <tr style="color:var(--text-secondary)"><td style="padding:4px 0">Equipo</td><td style="text-align:right">Pts</td><td style="text-align:right">Dif</td></tr>
+    <tr style="border-top:0.5px solid var(--border)"><td style="padding:6px 0">1. Francia</td><td style="text-align:right">4</td><td style="text-align:right">+3</td></tr>
+    <tr><td style="padding:6px 0">2. Alemania</td><td style="text-align:right">4</td><td style="text-align:right">+1</td></tr>
+    <tr><td style="padding:6px 0;color:var(--text-muted)">3. España</td><td style="text-align:right;color:var(--text-muted)">3</td><td style="text-align:right;color:var(--text-muted)">0</td></tr>
+    <tr><td style="padding:6px 0;color:var(--text-muted)">4. Polonia</td><td style="text-align:right;color:var(--text-muted)">0</td><td style="text-align:right;color:var(--text-muted)">-4</td></tr>
+  </table>
+  <div style="border-top:0.5px solid var(--border);padding-top:8px;display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;justify-content:space-between;font-size:12px">
+      <span>Francia vs Alemania</span>
+      <span style="color:var(--text-secondary)">1-1</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:12px">
+      <span>España vs Polonia</span>
+      <span style="color:var(--text-muted)">Programado 20:00</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<button onclick="sendPrompt('Cómo se aprueban los grupos y se confirman los avances desde la vista de admin')" style="margin-top:16px;font-size:13px">Ver acciones de admin ↗</button>
+</div>
+
+<div id="view-knockout" style="display:none">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+
+<div>
+  <p style="font-size:12px;color:var(--text-secondary);margin:0 0 8px">Dieciseisavos</p>
+  <div style="background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:8px;font-size:12px">
+    <div style="display:flex;justify-content:space-between"><span>Brasil</span><span>2</span></div>
+    <div style="display:flex;justify-content:space-between;color:var(--text-muted)"><span>Suecia</span><span>0</span></div>
+  </div>
+  <div style="background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);padding:10px;font-size:12px">
+    <div style="display:flex;justify-content:space-between"><span>Francia</span><span>?</span></div>
+    <div style="display:flex;justify-content:space-between"><span>Japón</span><span>?</span></div>
+  </div>
+</div>
+
+<div>
+  <p style="font-size:12px;color:var(--text-secondary);margin:0 0 8px">Octavos</p>
+  <div style="background:var(--surface-1);border:0.5px dashed var(--border);border-radius:var(--radius);padding:10px;margin-bottom:8px;font-size:12px;color:var(--text-muted)">
+    Ganador dieciseisavos
+  </div>
+  <div style="background:var(--surface-1);border:0.5px dashed var(--border);border-radius:var(--radius);padding:10px;font-size:12px;color:var(--text-muted)">
+    Por definir
+  </div>
+</div>
+
+<div>
+  <p style="font-size:12px;color:var(--text-secondary);margin:0 0 8px">Cuartos</p>
+  <div style="background:var(--surface-1);border:0.5px dashed var(--border);border-radius:var(--radius);padding:10px;font-size:12px;color:var(--text-muted)">
+    Por definir
+  </div>
+</div>
+
+</div>
+<p style="font-size:12px;color:var(--text-muted);margin-top:12px"><i class="ti ti-info-circle" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Multiplicador de esta fase: 1.5x</p>
+</div>
+
+<script>
+function showView(name) {
+  document.getElementById('view-grupos').style.display = name === 'grupos' ? 'block' : 'none';
+  document.getElementById('view-knockout').style.display = name === 'knockout' ? 'block' : 'none';
+  document.querySelectorAll('#stage-tabs button[data-tab]').forEach(function(b) {
+    b.style.background = b.dataset.tab === name ? 'var(--surface-1)' : '';
+    b.style.borderColor = b.dataset.tab === name ? 'var(--border-strong)' : '';
+  });
+}
+</script>

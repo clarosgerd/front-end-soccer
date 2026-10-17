@@ -1,0 +1,59 @@
+<h2 class="sr-only">Mockup de la vista de administración del bracket: aprobación de grupos y confirmación de avances sugeridos</h2>
+
+<p style="font-weight:500;font-size:16px;margin:0 0 4px">Administrar Copa Mundial 2026</p>
+<p style="font-size:13px;color:var(--text-secondary);margin:0 0 20px">Fase de grupos</p>
+
+<div style="margin-bottom:24px">
+  <p style="font-size:13px;color:var(--text-secondary);margin:0 0 10px">Grupos pendientes de aprobación</p>
+
+  <div style="border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:0.5px solid var(--border)">
+      <div>
+        <p style="font-size:13px;margin:0">Grupo B</p>
+        <p style="font-size:12px;color:var(--text-muted);margin:0">Francia, Alemania, España, Polonia</p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="sendPrompt('Confirmá la aprobación del Grupo B')" style="font-size:12px;padding:5px 12px">Aprobar</button>
+        <button onclick="sendPrompt('Confirmá el rechazo del Grupo B')" style="font-size:12px;padding:5px 12px;color:var(--text-danger)">Rechazar</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px">
+      <div>
+        <p style="font-size:13px;margin:0">Grupo F</p>
+        <p style="font-size:12px;color:var(--text-muted);margin:0">Portugal, Marruecos, Corea, Ghana</p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="sendPrompt('Confirmá la aprobación del Grupo F')" style="font-size:12px;padding:5px 12px">Aprobar</button>
+        <button onclick="sendPrompt('Confirmá el rechazo del Grupo F')" style="font-size:12px;padding:5px 12px;color:var(--text-danger)">Rechazar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <p style="font-size:13px;color:var(--text-secondary);margin:0">Avances sugeridos · Grupo A → dieciseisavos</p>
+    <button onclick="sendPrompt('Confirmá todos los avances sugeridos del Grupo A')" style="font-size:12px;padding:5px 12px">Confirmar todos</button>
+  </div>
+
+  <div style="border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:0.5px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:var(--bg-success);color:var(--text-success);font-size:11px;padding:2px 8px;border-radius:var(--radius)">1°</span>
+        <span style="font-size:13px">Brasil</span>
+        <span style="font-size:12px;color:var(--text-muted)">9 pts · +5 dif</span>
+      </div>
+      <button onclick="sendPrompt('Confirmá el avance de Brasil a dieciseisavos')" style="font-size:12px;padding:5px 12px">Confirmar</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="background:var(--bg-success);color:var(--text-success);font-size:11px;padding:2px 8px;border-radius:var(--radius)">2°</span>
+        <span style="font-size:13px">Argentina</span>
+        <span style="font-size:12px;color:var(--text-muted)">6 pts · +2 dif</span>
+      </div>
+      <button onclick="sendPrompt('Confirmá el avance de Argentina a dieciseisavos')" style="font-size:12px;padding:5px 12px">Confirmar</button>
+    </div>
+  </div>
+
+  <p style="font-size:12px;color:var(--text-muted);margin-top:10px"><i class="ti ti-info-circle" style="font-size:14px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>Regla aplicada: top_n = 2. Uruguay y Chile no avanzan.</p>
+</div>
