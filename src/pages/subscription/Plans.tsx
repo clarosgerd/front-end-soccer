@@ -6,6 +6,7 @@ import type { SubscriptionPlan } from '@/api/types'
 
 const PLAN_LABELS: Record<SubscriptionPlan, string> = {
   free: 'Free',
+  predictor: 'Predictor',
   pro: 'Pro',
   premium: 'Premium',
 }

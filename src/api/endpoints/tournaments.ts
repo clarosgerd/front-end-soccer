@@ -74,4 +74,18 @@ export const tournamentsApi = {
     apiClient
       .post(`/tournament/${id}/remove-manager`, { user_id: userId })
       .then((r) => r.data),
+
+  // Torneos disponibles por plan+temporada (16/10/2026) — camino 1 del
+  // onboarding ("elegir torneo configurado").
+  availableForMe: (page = 1, perPage = 12) =>
+    apiClient
+      .get<ApiListResponse<Tournament>>('/tournament/available-for-me', { params: { page, per_page: perPage } })
+      .then((r) => r.data),
+
+  // Sync manual por el dueño de su torneo público (16/10/2026) — solo
+  // tiene sentido si tournament.league_category no es null.
+  sync: (id: number) =>
+    apiClient
+      .post<{ success: boolean; message: string }>(`/tournament/${id}/sync`)
+      .then((r) => r.data),
 }

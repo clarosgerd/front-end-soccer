@@ -4,7 +4,13 @@ import { AxiosError, type AxiosHeaders } from 'axios'
 
 function makeAxiosError(
   status: number,
-  data?: { message: string; errors?: Record<string, string[]> }
+  data?: {
+    message: string
+    errors?: Record<string, string[]>
+    reason?: string
+    current_tier?: string
+    upgrade_url?: string
+  }
 ): AxiosError {
   return new AxiosError(
     'Request failed',
@@ -64,6 +70,30 @@ describe('normalizeApiError', () => {
     expect(result.status).toBe(403)
     expect(result.isForbidden).toBe(true)
     expect(result.message).toBe('Forbidden.')
+    expect(result.requiresPaidSubscription).toBe(false)
+  })
+
+  it('flags requiresPaidSubscription only when reason is subscription_required', () => {
+    const error = makeAxiosError(403, {
+      message: 'Necesitás una suscripción activa para pronosticar.',
+      reason: 'subscription_required',
+      current_tier: 'free',
+      upgrade_url: '/api/v1/user/subscription/plans',
+    })
+    const result = normalizeApiError(error)
+
+    expect(result.isForbidden).toBe(true)
+    expect(result.requiresPaidSubscription).toBe(true)
+    expect(result.currentTier).toBe('free')
+    expect(result.upgradeUrl).toBe('/api/v1/user/subscription/plans')
+  })
+
+  it('does not flag requiresPaidSubscription for other plan-limit 403s', () => {
+    const error = makeAxiosError(403, { message: 'Group member limit reached', current_tier: 'free' })
+    const result = normalizeApiError(error)
+
+    expect(result.isForbidden).toBe(true)
+    expect(result.requiresPaidSubscription).toBe(false)
   })
 
   it('handles a 422 with no errors field', () => {

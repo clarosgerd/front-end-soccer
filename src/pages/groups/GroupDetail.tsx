@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useState, useMemo, type FormEvent } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { useGroup, useLeaderboard, useToggleGroupActive } from '@/hooks/useGroups'
+import { useTournament, useSyncTournament } from '@/hooks/useTournaments'
 import { usePendingMembers, useApproveMember, useRejectMember } from '@/hooks/useGroupMembers'
 import { useSendInvitation } from '@/hooks/useInvitations'
 import { normalizeApiError } from '@/lib/errorHandler'
@@ -35,10 +36,19 @@ export function GroupDetail() {
 
   const tournamentId = group?.tournament_id ?? undefined
   const { role } = useTournamentRole(tournamentId!)
+  const { data: tournament } = useTournament(tournamentId!)
+  const syncTournament = useSyncTournament(tournamentId!)
 
   const isGlobalAdmin = user?.role === 'admin'
   const isGroupCreator = group?.creator_id === user?.user_id
   const canManage = isGlobalAdmin || isGroupCreator
+
+  const handleSync = () => {
+    syncTournament.mutate(undefined, {
+      onSuccess: (data) => toast.success(data.message),
+      onError: (err) => toast.error(normalizeApiError(err).message || 'No se pudo sincronizar.'),
+    })
+  }
 
   const [inviteEmail, setInviteEmail] = useState('')
   const sendInvitation = useSendInvitation(id)
@@ -175,6 +185,26 @@ export function GroupDetail() {
       {canManage && (
         <Card className="mb-4">
           <AiCompetitorToggle groupId={id} />
+        </Card>
+      )}
+
+      {canManage && tournament?.league_category && (
+        <Card className="mb-4 flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">Sincronización de resultados</h3>
+            <p className="text-xs text-slate-500">
+              Se sincroniza solo también cada pocas horas. Usá esto si necesitás los resultados más
+              recientes ahora mismo.
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            onClick={handleSync}
+            isLoading={syncTournament.isPending}
+            className="flex-shrink-0 text-xs"
+          >
+            Sincronizar ahora
+          </Button>
         </Card>
       )}
 

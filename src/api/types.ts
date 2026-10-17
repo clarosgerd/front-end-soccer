@@ -23,6 +23,11 @@ export interface ApiItemResponse<T> {
 export interface ApiErrorResponse {
   message: string
   errors?: Record<string, string[]>
+  // Presentes en los 403 de límite de plan / suscripción requerida (ver
+  // CheckGroupLimits/CheckSubscriptionTier/CheckPredictionLimits).
+  reason?: string
+  current_tier?: string
+  upgrade_url?: string
 }
 
 // Auth
@@ -59,6 +64,10 @@ export interface Tournament {
   actived: number | boolean
   status: TournamentStatus
   created_by: number | null
+  external_id: number | null
+  // 'conmebol' | 'european' | null (demo/privado, sin fuente externa) —
+  // determina si el dueño puede usar "Sincronizar ahora".
+  league_category: string | null
   is_promotional: number | boolean
   promotional_tier_required: number | null
   promotional_ends_at: string | null
@@ -306,7 +315,7 @@ export interface AdvancementRule {
 
 // Suscripciones
 
-export type SubscriptionPlan = 'free' | 'pro' | 'premium'
+export type SubscriptionPlan = 'free' | 'predictor' | 'pro' | 'premium'
 
 export interface SubscriptionPlanInfo {
   plan: SubscriptionPlan

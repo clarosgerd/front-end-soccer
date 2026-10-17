@@ -107,3 +107,18 @@ export function useRemoveManager(tournamentId: number) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tournaments', tournamentId, 'managers'] }),
   })
 }
+
+export function useAvailableTournaments(page = 1, perPage = 12) {
+  return useQuery({
+    queryKey: ['tournaments', 'available-for-me', page, perPage],
+    queryFn: () => tournamentsApi.availableForMe(page, perPage),
+  })
+}
+
+export function useSyncTournament(tournamentId: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => tournamentsApi.sync(tournamentId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tournaments', tournamentId] }),
+  })
+}

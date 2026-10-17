@@ -14,6 +14,13 @@ export function Dashboard() {
         Desde acá vas a poder ver tus torneos, grupos y predicciones.
       </p>
 
+      <Link
+        to="/start"
+        className="mt-4 inline-block rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+      >
+        + Empezar un torneo
+      </Link>
+
       {subscription && subscription.plan === 'free' && (
         <Card className="mt-6 flex items-center justify-between bg-amber-50">
           <div>

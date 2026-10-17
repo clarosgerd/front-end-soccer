@@ -8,6 +8,7 @@ import { Login } from '@/pages/auth/Login'
 import { Register } from '@/pages/auth/Register'
 import { Dashboard } from '@/pages/Dashboard'
 import { TournamentList } from '@/pages/tournaments/TournamentList'
+import { Onboarding } from '@/pages/tournaments/Onboarding'
 import { TournamentEdit } from '@/pages/tournaments/TournamentEdit'
 import { Stages } from '@/pages/tournaments/Stages'
 import { BracketView } from '@/pages/tournaments/Bracket/BracketView'
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: 'dashboard', element: <Dashboard /> },
+      { path: 'start', element: <Onboarding /> },
       { path: 'tournaments', element: <TournamentList /> },
       { path: 'tournaments/:tournamentId/edit', element: <TournamentEdit /> },
       { path: 'tournaments/:tournamentId/stages', element: <Stages /> },

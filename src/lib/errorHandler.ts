@@ -12,6 +12,12 @@ export interface NormalizedError {
   isValidationError: boolean
   isAuthError: boolean
   isForbidden: boolean
+  // true solo en el 403 de "necesitás suscripción paga para pronosticar"
+  // (ver CheckPredictionLimits) — distinto de otros 403 de límite de plan
+  // (torneos/miembros), que no llevan este reason.
+  requiresPaidSubscription: boolean
+  currentTier?: string
+  upgradeUrl?: string
 }
 
 /**
@@ -40,6 +46,9 @@ export function normalizeApiError(error: unknown): NormalizedError {
       isValidationError: status === 422,
       isAuthError: status === 401,
       isForbidden: status === 403,
+      requiresPaidSubscription: status === 403 && data?.reason === 'subscription_required',
+      currentTier: data?.current_tier,
+      upgradeUrl: data?.upgrade_url,
     }
   }
 
@@ -49,5 +58,6 @@ export function normalizeApiError(error: unknown): NormalizedError {
     isValidationError: false,
     isAuthError: false,
     isForbidden: false,
+    requiresPaidSubscription: false,
   }
 }
