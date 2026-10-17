@@ -249,11 +249,15 @@ export interface TournamentGroupStanding extends TournamentGroupTeam {
 
 export interface BracketMatch {
   match_id: number
-  home: { team_id: number; name: string }
-  away: { team_id: number; name: string }
+  // logo_url solo viene en los matches de fase de grupos (el backend
+  // serializa el modelo Team completo ahí); los de knockout mandan un
+  // subset sin logo — por eso es opcional, no siempre está presente.
+  home: { team_id: number; name: string; logo_url?: string | null }
+  away: { team_id: number; name: string; logo_url?: string | null }
   home_score: number | null
   away_score: number | null
   status: MatchStatus
+  match_date: string
 }
 
 export interface BracketTournamentGroup {

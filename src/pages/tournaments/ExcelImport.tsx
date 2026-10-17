@@ -34,32 +34,24 @@ interface ParseResult {
   matches: ParsedMatch[]
 }
 
-function normalizeSheet(headers: string[]): Record<string, string>[] {
-  return (row: Record<string, unknown>) => {
-    const obj: Record<string, string> = {}
-    headers.forEach((h, i) => {
-      obj[h] = String(row[i] ?? row[h] ?? '').trim()
-    })
-    return obj
-  }
-}
-
 function parseWorkbook(wb: XLSX.WorkBook): ParseResult {
   const result: ParseResult = { stages: [], teams: [], matches: [] }
 
   for (const name of wb.SheetNames) {
     const sheet = wb.Sheets[name]
-    const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { header: 1 })
+    // header: 1 hace que sheet_to_json devuelva filas como arrays
+    // posicionales (unknown[][]), no objetos — el generic tiene que
+    // reflejar eso para no necesitar casts riesgosos más abajo.
+    const rows = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1 })
     if (rows.length < 2) continue
 
-    const headers = (rows[0] as string[]).map((h) => String(h ?? '').toLowerCase().trim())
-    const data = rows.slice(1).filter((r) => (r as unknown[]).some((c) => c != null && c !== ''))
+    const headers = rows[0].map((h) => String(h ?? '').toLowerCase().trim())
+    const data = rows.slice(1).filter((r) => r.some((c) => c != null && c !== ''))
 
     const norm = data.map((row) => {
       const obj: Record<string, string> = {}
-      const arr = row as unknown[]
       headers.forEach((h, i) => {
-        obj[h] = String(arr[i] ?? '').trim()
+        obj[h] = String(row[i] ?? '').trim()
       })
       return obj
     })

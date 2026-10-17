@@ -13,7 +13,6 @@ const RESULT_LABELS: Record<string, string> = {
 }
 
 export function AiPredictionBadge({ prediction }: { prediction: AiPrediction }) {
-  const topProb = Math.max(prediction.home_win_prob, prediction.draw_prob, prediction.away_win_prob)
   const confidenceLabel = prediction.confidence >= 0.5 ? 'Alta' : prediction.confidence >= 0.2 ? 'Media' : 'Baja'
 
   return (

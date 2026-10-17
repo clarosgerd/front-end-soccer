@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function AiCompetitorToggle({ groupId, showLabel = true }: Props) {
-  const { data: status, isLoading, refetch } = useAiCompetitorStatus(groupId)
+  const { data: status, isLoading } = useAiCompetitorStatus(groupId)
   const toggle = useToggleAiCompetitor(groupId)
   const regenerate = useRegenerateAiCompetitor(groupId)
 
@@ -34,10 +34,10 @@ export function AiCompetitorToggle({ groupId, showLabel = true }: Props) {
 
           <div className="flex items-center gap-2">
             <Button
-              size="sm"
-              variant="outline"
+              variant="secondary"
               isLoading={regenerate.isPending}
               onClick={() => regenerate.mutate()}
+              className="text-xs"
             >
               Regenerar predicciones
             </Button>

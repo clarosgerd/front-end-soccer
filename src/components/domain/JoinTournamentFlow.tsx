@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useTournamentGroups, useCreateGroup } from '@/hooks/useGroups'
 import { useJoinGroup, useMyMemberships } from '@/hooks/useGroupMembers'
 import { useTournament } from '@/hooks/useTournaments'
-import { useAuthStore } from '@/store/authStore'
 import { toast } from '@/lib/toast'
 import { normalizeApiError } from '@/lib/errorHandler'
 import { Card } from '@/components/ui/Card'
@@ -30,8 +29,8 @@ function QuickCreateGroup({
         tournament_id: tournamentId,
         name,
         description: 'Grupo privado del torneo',
-        is_public: isPublic ? '1' : '0',
         ...DEFAULT_GROUP_VALUES,
+        is_public: isPublic ? '1' : '0',
       },
       {
         onSuccess: () => {
@@ -47,11 +46,11 @@ function QuickCreateGroup({
       <h3 className="mb-3 text-sm font-semibold text-slate-900">Crear grupo rápido</h3>
       {error && (
         <div className="mb-3 rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700">
-          {error}
+          {error.message}
         </div>
       )}
       <div className="space-y-3">
-        <TextField label="Nombre del grupo" value={name} onChange={setName} />
+        <TextField label="Nombre del grupo" value={name} onChange={(e) => setName(e.target.value)} />
         <label className="flex items-center gap-2 text-sm text-slate-700">
           <input
             type="checkbox"
@@ -78,7 +77,6 @@ export function JoinTournamentFlow({ tournamentId }: { tournamentId: number }) {
   const { data: groupsData, isLoading } = useTournamentGroups(tournamentId)
   const { data: memberships } = useMyMemberships(tournamentId)
   const joinGroup = useJoinGroup()
-  const user = useAuthStore((s) => s.user)
   const [showCreate, setShowCreate] = useState(false)
 
   const groups = groupsData?.data ?? []
@@ -184,7 +182,7 @@ export function JoinTournamentFlow({ tournamentId }: { tournamentId: number }) {
                 onClick={() => {
                   joinGroup.mutate(g.group_id, {
                     onSuccess: () => toast.success('Solicitud enviada'),
-                    onError: (err) => toast.error(normalizeApiError(err)),
+                    onError: (err) => toast.error(normalizeApiError(err).message),
                   })
                 }}
                 disabled={joinGroup.isPending}

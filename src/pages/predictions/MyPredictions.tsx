@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useMatches, usePredictionsByGroup } from '@/hooks/usePredictions'
 import { MatchPredictionCard } from '@/components/domain/MatchPredictionCard'
 import { ClosedMatchCard } from '@/components/domain/ClosedMatchCard'
-import type { Match } from '@/api/types'
+import type { Match, Prediction } from '@/api/types'
 
 const WINDOW_MS = 30 * 60 * 1000
 const INITIAL_OPEN = 3
@@ -38,7 +38,7 @@ export function MyPredictions() {
   const { data: predictionsData } = usePredictionsByGroup(groupId)
 
   const predictionsMap = useMemo(() => {
-    const map = new Map<number, (typeof predictionsData extends { data: infer T } ? T : never)[number]>()
+    const map = new Map<number, Prediction>()
     for (const p of predictionsData?.data ?? []) {
       map.set(p.match_id, p)
     }

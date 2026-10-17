@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react'
 import type { Match } from '@/api/types'
 import {
   getMonthGrid,
-  getDayName,
   isToday,
   isSameDay,
   formatDateKey,

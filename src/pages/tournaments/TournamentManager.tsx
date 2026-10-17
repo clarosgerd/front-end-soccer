@@ -7,6 +7,7 @@ import { ExcelImport } from './ExcelImport'
 import { useAuthStore } from '@/store/authStore'
 import { confirmAction } from '@/lib/confirmAction'
 import { toast } from '@/lib/toast'
+import { normalizeApiError } from '@/lib/errorHandler'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { TextField } from '@/components/ui/TextField'
@@ -173,8 +174,7 @@ export function TournamentManager() {
     if (ok) {
       publishMutation.mutate(undefined, {
         onSuccess: () => toast.success('Torneo publicado'),
-        onError: (e: { response?: { data?: { message?: string } } }) =>
-          toast.error(e?.response?.data?.message ?? 'Error al publicar'),
+        onError: (e) => toast.error(normalizeApiError(e).message || 'Error al publicar'),
       })
     }
   }
@@ -187,8 +187,7 @@ export function TournamentManager() {
     if (ok) {
       goLiveMutation.mutate(undefined, {
         onSuccess: () => toast.success('Torneo activado'),
-        onError: (e: { response?: { data?: { message?: string } } }) =>
-          toast.error(e?.response?.data?.message ?? 'Error al activar'),
+        onError: (e) => toast.error(normalizeApiError(e).message || 'Error al activar'),
       })
     }
   }
@@ -201,8 +200,7 @@ export function TournamentManager() {
     if (ok) {
       closeMutation.mutate(undefined, {
         onSuccess: () => toast.success('Torneo cerrado'),
-        onError: (e: { response?: { data?: { message?: string } } }) =>
-          toast.error(e?.response?.data?.message ?? 'Error al cerrar'),
+        onError: (e) => toast.error(normalizeApiError(e).message || 'Error al cerrar'),
       })
     }
   }

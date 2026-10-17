@@ -19,10 +19,6 @@ const GRADIENTS = [
   'from-cyan-500 to-sky-600',
 ]
 
-function getGradient(id: number) {
-  return GRADIENTS[id % GRADIENTS.length]
-}
-
 export function GroupList() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')

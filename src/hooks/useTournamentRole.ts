@@ -15,13 +15,13 @@ export function useTournamentRole(tournamentId: number) {
     if (user.role === 'admin') return 'admin'
     if (tournament?.created_by === user.user_id) return 'owner'
 
-    if (memberships?.data) {
-      const groupAdmin = memberships.data.find(
+    if (memberships) {
+      const groupAdmin = memberships.find(
         (m) => m.is_admin === 1 && m.status === 'accepted',
       )
       if (groupAdmin) return 'manager'
 
-      const member = memberships.data.find((m) => m.status === 'accepted')
+      const member = memberships.find((m) => m.status === 'accepted')
       if (member) return 'predictor'
     }
 
