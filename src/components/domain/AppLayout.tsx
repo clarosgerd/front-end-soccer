@@ -14,6 +14,8 @@ import {
   RefreshCw,
   ChevronRight,
   Menu,
+  ShieldCheck,
+  Receipt,
 } from 'lucide-react'
 
 const navItems = [
@@ -26,7 +28,11 @@ const navItems = [
   { to: '/subscription', label: 'Planes', icon: CreditCard },
 ]
 
-const adminItems = [{ to: '/admin/sync', label: 'Sync', icon: RefreshCw }]
+const adminItems = [
+  { to: '/admin/sync', label: 'Sync', icon: RefreshCw },
+  { to: '/admin/users', label: 'Usuarios', icon: ShieldCheck },
+  { to: '/admin/subscriptions', label: 'Suscripciones', icon: Receipt },
+]
 
 export function AppLayout() {
   const user = useAuthStore((s) => s.user)

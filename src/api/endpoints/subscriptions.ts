@@ -1,5 +1,10 @@
 import apiClient from '../client'
-import type { SubscriptionPlan, SubscriptionPlanInfo } from '../types'
+import type {
+  SipCheckoutResponse,
+  SipPaymentStatus,
+  SubscriptionPlan,
+  SubscriptionPlanInfo,
+} from '../types'
 
 export interface CurrentSubscription {
   plan: SubscriptionPlan
@@ -16,11 +21,20 @@ export const subscriptionsApi = {
       .get<{ data: SubscriptionPlanInfo[] }>('/user/subscription/plans')
       .then((r) => r.data.data),
 
-  // Devuelve una URL de Stripe Checkout; el front redirige con window.location.href
+  // Genera un QR de pago SIP (Bolivianos); el front lo muestra y hace polling
+  // de paymentStatus() hasta que se confirme — ya no hay redirección externa.
   checkout: (payload: { plan: SubscriptionPlan; interval: 'monthly' | 'annual' }) =>
     apiClient
-      .post<{ url: string }>('/user/subscription/checkout', payload)
-      .then((r) => r.data.url),
+      .post<SipCheckoutResponse>('/user/subscription/checkout', {
+        plan: payload.plan,
+        billing: payload.interval,
+      })
+      .then((r) => r.data),
+
+  paymentStatus: (referencia: string) =>
+    apiClient
+      .get<SipPaymentStatus>(`/user/subscription/payment-status/${referencia}`)
+      .then((r) => r.data),
 
   cancel: () => apiClient.post('/user/subscription/cancel'),
 }

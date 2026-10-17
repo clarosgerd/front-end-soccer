@@ -25,10 +25,11 @@ import { ScoringDashboard } from '@/pages/groups/ScoringDashboard'
 import { MyPredictions } from '@/pages/predictions/MyPredictions'
 import { PoolDetail } from '@/pages/pool/PoolDetail'
 import { Plans } from '@/pages/subscription/Plans'
-import { CheckoutRedirect } from '@/pages/subscription/CheckoutRedirect'
 import { TeamList } from '@/pages/teams/TeamList'
 import { MatchList } from '@/pages/matches/MatchList'
 import { SyncAdmin } from '@/pages/admin/SyncAdmin'
+import { Users as AdminUsers } from '@/pages/admin/Users'
+import { Subscriptions as AdminSubscriptions } from '@/pages/admin/Subscriptions'
 
 export const router = createBrowserRouter([
   {
@@ -68,8 +69,9 @@ export const router = createBrowserRouter([
       { path: 'invitations', element: <Invitations /> },
       { path: 'predictions', element: <MyPredictions /> },
       { path: 'subscription', element: <Plans /> },
-      { path: 'subscription/checkout-redirect', element: <CheckoutRedirect /> },
       { path: 'admin/sync', element: <AdminRoute><SyncAdmin /></AdminRoute> },
+      { path: 'admin/users', element: <AdminRoute><AdminUsers /></AdminRoute> },
+      { path: 'admin/subscriptions', element: <AdminRoute><AdminSubscriptions /></AdminRoute> },
     ],
   },
 ])

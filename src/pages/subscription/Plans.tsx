@@ -1,8 +1,13 @@
 import { useState } from 'react'
-import { useCurrentSubscription, usePlans, useStartCheckout } from '@/hooks/useSubscription'
+import {
+  useCurrentSubscription,
+  usePlans,
+  usePaymentStatus,
+  useStartCheckout,
+} from '@/hooks/useSubscription'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import type { SubscriptionPlan } from '@/api/types'
+import type { SipCheckoutResponse, SubscriptionPlan } from '@/api/types'
 
 const PLAN_LABELS: Record<SubscriptionPlan, string> = {
   free: 'Free',
@@ -11,11 +16,64 @@ const PLAN_LABELS: Record<SubscriptionPlan, string> = {
   premium: 'Premium',
 }
 
+function SipQrModal({ checkout, onClose }: { checkout: SipCheckoutResponse; onClose: () => void }) {
+  const { data: status } = usePaymentStatus(checkout.referencia)
+  const isPaid = status?.status === 'active'
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4"
+      onClick={isPaid ? undefined : onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-sm rounded-lg bg-white p-6 text-center shadow-xl"
+      >
+        {isPaid ? (
+          <>
+            <p className="text-lg font-semibold text-emerald-700">¡Pago confirmado! 🎉</p>
+            <p className="mt-2 text-sm text-slate-600">Tu suscripción ya está activa.</p>
+            <Button className="mt-4 w-full" onClick={onClose}>
+              Listo
+            </Button>
+          </>
+        ) : (
+          <>
+            <h2 className="text-base font-semibold text-slate-900">Escaneá el QR para pagar</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Bs {checkout.monto.toFixed(2)} · {checkout.banco_destino ?? 'Pago QR'}
+            </p>
+            {checkout.qr_image_base64 && (
+              <img
+                src={`data:image/png;base64,${checkout.qr_image_base64}`}
+                alt="Código QR de pago"
+                className="mx-auto mt-4 h-56 w-56"
+              />
+            )}
+            {checkout.cuenta_destino && (
+              <p className="mt-2 text-xs text-slate-400">Cuenta destino: {checkout.cuenta_destino}</p>
+            )}
+            <p className="mt-4 text-xs text-slate-400">
+              Esperando confirmación del pago… esto se actualiza solo.
+            </p>
+            <Button variant="secondary" className="mt-4 w-full" onClick={onClose}>
+              Cancelar
+            </Button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export function Plans() {
   const { data: current } = useCurrentSubscription()
   const { data: plans, isLoading, isError } = usePlans()
   const [interval, setInterval] = useState<'monthly' | 'annual'>('monthly')
   const checkout = useStartCheckout()
+  const [activeCheckout, setActiveCheckout] = useState<SipCheckoutResponse | null>(null)
 
   return (
     <div>
@@ -56,7 +114,7 @@ export function Plans() {
             <Card key={plan.plan} className={isCurrent ? 'border-slate-900' : ''}>
               <p className="text-sm font-medium text-slate-900">{PLAN_LABELS[plan.plan]}</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
-                ${price}
+                Bs {price}
                 <span className="text-sm font-normal text-slate-400">
                   /{interval === 'monthly' ? 'mes' : 'año'}
                 </span>
@@ -78,7 +136,12 @@ export function Plans() {
                 variant={isCurrent ? 'secondary' : 'primary'}
                 disabled={isCurrent}
                 isLoading={checkout.isPending}
-                onClick={() => checkout.mutate({ plan: plan.plan, interval })}
+                onClick={() =>
+                  checkout.mutate(
+                    { plan: plan.plan, interval },
+                    { onSuccess: (data) => setActiveCheckout(data) },
+                  )
+                }
               >
                 {isCurrent ? 'Plan actual' : plan.plan === 'free' ? 'Volver a Free' : 'Suscribirme'}
               </Button>
@@ -91,6 +154,10 @@ export function Plans() {
         Los torneos marcados como promocionales dan acceso completo temporal sin necesidad
         de upgrade, incluso en el plan Free.
       </p>
+
+      {activeCheckout && (
+        <SipQrModal checkout={activeCheckout} onClose={() => setActiveCheckout(null)} />
+      )}
     </div>
   )
 }

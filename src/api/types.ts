@@ -325,6 +325,22 @@ export interface SubscriptionPlanInfo {
   tournament_limit: number | null
 }
 
+// Checkout vía SIP (QR boliviano) — reemplaza el checkout por redirección de Stripe
+export interface SipCheckoutResponse {
+  referencia: string
+  qr_image_base64: string | null
+  monto: number
+  moneda: 'BOB'
+  banco_destino: string | null
+  cuenta_destino: string | null
+  expires_at: string | null
+}
+
+export interface SipPaymentStatus {
+  referencia: string
+  status: 'pending_payment' | 'active' | 'cancelled' | 'past_due' | 'trialing' | 'incomplete'
+}
+
 // AI Predictions
 
 export interface AiPrediction {
