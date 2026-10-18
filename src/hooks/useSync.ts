@@ -8,11 +8,20 @@ export function useSyncStatus() {
   })
 }
 
+export function useFootballCompetitions() {
+  return useQuery({
+    queryKey: ['syncFootballCompetitions'],
+    queryFn: () => syncApi.footballCompetitions(),
+    staleTime: Infinity, // lista fija del free tier, no cambia en runtime
+  })
+}
+
 export function useSync() {
   return useMutation({
     mutationFn: (params: {
       type: string
       league?: EspnLeagueId
+      competition?: number
       season?: number
       source?: string
       force?: boolean

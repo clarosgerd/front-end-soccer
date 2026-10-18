@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSync, useSyncRunStatus, useSyncStatus } from '@/hooks/useSync'
+import { useFootballCompetitions, useSync, useSyncRunStatus, useSyncStatus } from '@/hooks/useSync'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { ESPN_LEAGUES, type EspnLeagueId } from '@/api/endpoints/sync'
@@ -36,10 +36,12 @@ const SYNC_SOURCES = [
 
 export function SyncAdmin() {
   const { data: status, isLoading: statusLoading } = useSyncStatus()
+  const { data: footballCompetitions } = useFootballCompetitions()
   const sync = useSync()
   const [selectedType, setSelectedType] = useState('all')
   const [selectedSource, setSelectedSource] = useState('all')
   const [selectedLeague, setSelectedLeague] = useState<EspnLeagueId | 'all'>('all')
+  const [selectedCompetition, setSelectedCompetition] = useState<number | 'all'>('all')
   const [season, setSeason] = useState(new Date().getFullYear())
   const [force, setForce] = useState(false)
   const [runId, setRunId] = useState<number | null>(null)
@@ -51,6 +53,8 @@ export function SyncAdmin() {
         type: selectedType,
         source: selectedSource,
         league: selectedSource === 'espn' && selectedLeague !== 'all' ? selectedLeague : undefined,
+        competition:
+          selectedSource === 'football' && selectedCompetition !== 'all' ? selectedCompetition : undefined,
         season,
         force,
       },
@@ -259,6 +263,43 @@ export function SyncAdmin() {
                 </button>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Competition selector (football-data.org only) */}
+        {selectedSource === 'football' && (
+          <div className="mb-4">
+            <label className="mb-1 block text-xs font-medium text-slate-700">Torneo</label>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedCompetition('all')}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  selectedCompetition === 'all'
+                    ? 'border-slate-900 bg-slate-900 text-white'
+                    : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                }`}
+              >
+                Las 13
+              </button>
+              {footballCompetitions?.map((c) => (
+                <button
+                  key={c.external_id}
+                  onClick={() => setSelectedCompetition(c.external_id)}
+                  className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                    selectedCompetition === c.external_id
+                      ? 'border-slate-900 bg-slate-900 text-white'
+                      : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                  }`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1 text-xs text-slate-400">
+              {selectedCompetition === 'all'
+                ? 'Sincroniza las 13 competiciones del free tier (más lento, ~7s entre cada una).'
+                : 'Sincroniza solo este torneo — mucho más rápido.'}
+            </p>
           </div>
         )}
 

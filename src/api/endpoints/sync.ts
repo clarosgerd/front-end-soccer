@@ -64,13 +64,27 @@ export const ESPN_LEAGUES = [
 
 export type EspnLeagueId = (typeof ESPN_LEAGUES)[number]['id']
 
+export interface FootballCompetition {
+  external_id: number
+  name: string
+}
+
 export const syncApi = {
   status: () =>
     apiClient.get<{ data: SyncStatus }>('/sync/status').then((r) => r.data.data),
 
+  // Lista de competiciones football-data.org sincronizables individualmente
+  // (ver --competition de football:sync) — viene del backend para no
+  // duplicar la lista acá.
+  footballCompetitions: () =>
+    apiClient
+      .get<{ competitions: FootballCompetition[] }>('/sync/competitions')
+      .then((r) => r.data.competitions),
+
   sync: (params: {
     type: string
     league?: EspnLeagueId
+    competition?: number
     season?: number
     source?: string
     force?: boolean
@@ -79,6 +93,7 @@ export const syncApi = {
       .post<SyncQueued>('/sync', {
         type: params.type,
         league: params.league ?? null,
+        competition: params.competition ?? null,
         season: params.season ?? new Date().getFullYear(),
         source: params.source ?? 'espn',
         force: params.force ?? false,
