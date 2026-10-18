@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSync, useSyncStatus } from '@/hooks/useSync'
+import { useSync, useSyncRunStatus, useSyncStatus } from '@/hooks/useSync'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { ESPN_LEAGUES, type EspnLeagueId } from '@/api/endpoints/sync'
@@ -42,16 +42,25 @@ export function SyncAdmin() {
   const [selectedLeague, setSelectedLeague] = useState<EspnLeagueId | 'all'>('all')
   const [season, setSeason] = useState(new Date().getFullYear())
   const [force, setForce] = useState(false)
+  const [runId, setRunId] = useState<number | null>(null)
+  const run = useSyncRunStatus(runId)
 
   const handleSync = () => {
-    sync.mutate({
-      type: selectedType,
-      source: selectedSource,
-      league: selectedSource === 'espn' && selectedLeague !== 'all' ? selectedLeague : undefined,
-      season,
-      force,
-    })
+    sync.mutate(
+      {
+        type: selectedType,
+        source: selectedSource,
+        league: selectedSource === 'espn' && selectedLeague !== 'all' ? selectedLeague : undefined,
+        season,
+        force,
+      },
+      {
+        onSuccess: (data) => setRunId(data.run_id),
+      }
+    )
   }
+
+  const isRunning = run.data ? run.data.status === 'queued' || run.data.status === 'running' : false
 
   return (
     <div className="space-y-6">
@@ -299,29 +308,34 @@ export function SyncAdmin() {
             />
             Forzar (ignorar sync reciente)
           </label>
-          <Button onClick={handleSync} isLoading={sync.isPending}>
+          <Button onClick={handleSync} isLoading={sync.isPending || isRunning}>
             Sincronizar
           </Button>
-          {sync.isPending && (
-            <p className="text-xs text-slate-400">Puede tardar unos segundos...</p>
+          {(sync.isPending || isRunning) && (
+            <p className="text-xs text-slate-400">
+              {isRunning ? 'Corriendo en background, puede tardar varios minutos...' : 'Encolando...'}
+            </p>
           )}
         </div>
       </Card>
 
       {/* Result */}
-      {sync.data && (
+      {run.data && (run.data.status === 'completed' || run.data.status === 'failed') && (
         <Card>
           <div className="mb-2 flex items-center gap-2">
             <span
               className={`inline-block h-2 w-2 rounded-full ${
-                sync.data.success ? 'bg-emerald-500' : 'bg-red-500'
+                run.data.success ? 'bg-emerald-500' : 'bg-red-500'
               }`}
             />
-            <p className="text-sm font-medium text-slate-900">{sync.data.message}</p>
+            <p className="text-sm font-medium text-slate-900">{run.data.message}</p>
           </div>
-          <pre className="max-h-64 overflow-auto rounded bg-slate-900 p-3 text-xs text-slate-300">
-            {sync.data.log}
-          </pre>
+          {run.data.log && (
+            <pre className="max-h-64 overflow-auto rounded bg-slate-900 p-3 text-xs text-slate-300">
+              {run.data.log}
+            </pre>
+          )}
+          {run.data.error && <p className="mt-2 text-xs text-red-600">{run.data.error}</p>}
         </Card>
       )}
 

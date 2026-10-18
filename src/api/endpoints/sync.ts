@@ -30,13 +30,23 @@ export interface SyncStatus {
   football_data?: LeagueSyncStatus[]
 }
 
-export interface SyncResult {
-  success: boolean
-  message: string
+export interface SyncQueued {
+  run_id: number
+  status: 'queued'
   type: string
   season: number
   source: string
-  log: string
+}
+
+export type SyncRunStatus = 'queued' | 'running' | 'completed' | 'failed'
+
+export interface SyncRun {
+  run_id: number
+  status: SyncRunStatus
+  success: boolean
+  message: string | null
+  log: string | null
+  error: string | null
 }
 
 export const ESPN_LEAGUES = [
@@ -66,12 +76,15 @@ export const syncApi = {
     force?: boolean
   }) =>
     apiClient
-      .post<{ data: SyncResult }>('/sync', {
+      .post<SyncQueued>('/sync', {
         type: params.type,
         league: params.league ?? null,
         season: params.season ?? new Date().getFullYear(),
         source: params.source ?? 'espn',
         force: params.force ?? false,
       })
-      .then((r) => r.data.data),
+      .then((r) => r.data),
+
+  runStatus: (runId: number) =>
+    apiClient.get<SyncRun>(`/sync/runs/${runId}`).then((r) => r.data),
 }

@@ -9,8 +9,6 @@ export function useSyncStatus() {
 }
 
 export function useSync() {
-  const queryClient = useQueryClient()
-
   return useMutation({
     mutationFn: (params: {
       type: string
@@ -19,8 +17,29 @@ export function useSync() {
       source?: string
       force?: boolean
     }) => syncApi.sync(params),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['syncStatus'] })
+  })
+}
+
+// El sync corre en background (ver RunSyncJob en el backend) — pollea cada
+// 5s hasta que el run termina (completed/failed), igual al patrón de
+// usePaymentStatus para el pago SIP.
+export function useSyncRunStatus(runId: number | null) {
+  const queryClient = useQueryClient()
+
+  return useQuery({
+    queryKey: ['sync', 'run', runId],
+    queryFn: () => syncApi.runStatus(runId as number),
+    enabled: !!runId,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status
+      return status === 'completed' || status === 'failed' ? false : 5000
+    },
+    select: (data) => {
+      if (data.status === 'completed' || data.status === 'failed') {
+        queryClient.invalidateQueries({ queryKey: ['syncStatus'] })
+      }
+
+      return data
     },
   })
 }
