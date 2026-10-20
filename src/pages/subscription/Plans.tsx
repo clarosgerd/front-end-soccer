@@ -7,6 +7,8 @@ import {
 } from '@/hooks/useSubscription'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { toast } from '@/lib/toast'
+import { normalizeApiError } from '@/lib/errorHandler'
 import type { SipCheckoutResponse } from '@/api/types'
 
 function SipQrModal({ checkout, onClose }: { checkout: SipCheckoutResponse; onClose: () => void }) {
@@ -133,7 +135,11 @@ export function Plans() {
                 onClick={() =>
                   checkout.mutate(
                     { plan: plan.plan, interval },
-                    { onSuccess: (data) => setActiveCheckout(data) },
+                    {
+                      onSuccess: (data) => setActiveCheckout(data),
+                      onError: (e) =>
+                        toast.error(normalizeApiError(e).message || 'No se pudo iniciar la suscripción.'),
+                    },
                   )
                 }
               >
