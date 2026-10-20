@@ -229,17 +229,17 @@ export function TournamentManager() {
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">
-        {status === 'draft' && isOwner && (
+        {status === 'draft' && (isOwner || isAdmin) && (
           <Button onClick={handlePublish} disabled={publishMutation.isPending}>
             {publishMutation.isPending ? 'Publicando...' : 'Publicar torneo'}
           </Button>
         )}
-        {status === 'published' && isOwner && (
+        {status === 'published' && (isOwner || isAdmin) && (
           <Button onClick={handleGoLive} disabled={goLiveMutation.isPending}>
             {goLiveMutation.isPending ? 'Activando...' : 'Activar torneo'}
           </Button>
         )}
-        {status === 'live' && isOwner && (
+        {status === 'live' && (isOwner || isAdmin) && (
           <>
             <Link
               to={`/tournaments/${id}/bracket`}

@@ -30,6 +30,7 @@ import { MatchList } from '@/pages/matches/MatchList'
 import { SyncAdmin } from '@/pages/admin/SyncAdmin'
 import { Users as AdminUsers } from '@/pages/admin/Users'
 import { Subscriptions as AdminSubscriptions } from '@/pages/admin/Subscriptions'
+import { Plans as AdminPlans } from '@/pages/admin/Plans'
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +73,7 @@ export const router = createBrowserRouter([
       { path: 'admin/sync', element: <AdminRoute><SyncAdmin /></AdminRoute> },
       { path: 'admin/users', element: <AdminRoute><AdminUsers /></AdminRoute> },
       { path: 'admin/subscriptions', element: <AdminRoute><AdminSubscriptions /></AdminRoute> },
+      { path: 'admin/plans', element: <AdminRoute><AdminPlans /></AdminRoute> },
     ],
   },
 ])

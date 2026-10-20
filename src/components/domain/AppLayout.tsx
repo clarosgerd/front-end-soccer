@@ -16,6 +16,7 @@ import {
   Menu,
   ShieldCheck,
   Receipt,
+  Tag,
 } from 'lucide-react'
 
 const navItems = [
@@ -32,6 +33,7 @@ const adminItems = [
   { to: '/admin/sync', label: 'Sync', icon: RefreshCw },
   { to: '/admin/users', label: 'Usuarios', icon: ShieldCheck },
   { to: '/admin/subscriptions', label: 'Suscripciones', icon: Receipt },
+  { to: '/admin/plans', label: 'Planes', icon: Tag },
 ]
 
 export function AppLayout() {

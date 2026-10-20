@@ -315,10 +315,14 @@ export interface AdvancementRule {
 
 // Suscripciones
 
-export type SubscriptionPlan = 'free' | 'predictor' | 'pro' | 'premium'
+// Planes administrables por super admin (20/10/2026) — ya no es un union
+// cerrado de 4 valores: un plan nuevo creado desde /admin/plans llega acá
+// como un slug más, sin deploy de frontend.
+export type SubscriptionPlan = string
 
 export interface SubscriptionPlanInfo {
   plan: SubscriptionPlan
+  name: string
   monthly_price: number
   annual_price: number
   predictions_per_day: number | null

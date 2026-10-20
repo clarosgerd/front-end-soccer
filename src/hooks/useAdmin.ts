@@ -69,3 +69,69 @@ export function useAdminPayments(params: { status?: string; page?: number } = {}
     queryFn: () => adminApi.payments(params),
   })
 }
+
+export function useAdminPlans() {
+  return useQuery({
+    queryKey: ['admin', 'plans'],
+    queryFn: () => adminApi.plans(),
+  })
+}
+
+export function useCreateAdminPlan() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (payload: Parameters<typeof adminApi.createPlan>[0]) => adminApi.createPlan(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] })
+    },
+  })
+}
+
+export function useUpdateAdminPlan() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ planId, payload }: { planId: number; payload: Parameters<typeof adminApi.updatePlan>[1] }) =>
+      adminApi.updatePlan(planId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] })
+    },
+  })
+}
+
+export function useCreateAdminPlanPromotion() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      planId,
+      payload,
+    }: {
+      planId: number
+      payload: Parameters<typeof adminApi.createPlanPromotion>[1]
+    }) => adminApi.createPlanPromotion(planId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] })
+    },
+  })
+}
+
+export function useUpdateAdminPlanPromotion() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      planId,
+      promotionId,
+      payload,
+    }: {
+      planId: number
+      promotionId: number
+      payload: Parameters<typeof adminApi.updatePlanPromotion>[2]
+    }) => adminApi.updatePlanPromotion(planId, promotionId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] })
+    },
+  })
+}

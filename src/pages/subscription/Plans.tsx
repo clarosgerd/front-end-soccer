@@ -7,14 +7,7 @@ import {
 } from '@/hooks/useSubscription'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import type { SipCheckoutResponse, SubscriptionPlan } from '@/api/types'
-
-const PLAN_LABELS: Record<SubscriptionPlan, string> = {
-  free: 'Free',
-  predictor: 'Predictor',
-  pro: 'Pro',
-  premium: 'Premium',
-}
+import type { SipCheckoutResponse } from '@/api/types'
 
 function SipQrModal({ checkout, onClose }: { checkout: SipCheckoutResponse; onClose: () => void }) {
   const { data: status } = usePaymentStatus(checkout.referencia)
@@ -74,6 +67,7 @@ export function Plans() {
   const [interval, setInterval] = useState<'monthly' | 'annual'>('monthly')
   const checkout = useStartCheckout()
   const [activeCheckout, setActiveCheckout] = useState<SipCheckoutResponse | null>(null)
+  const currentPlanName = plans?.find((p) => p.plan === current?.plan)?.name ?? current?.plan
 
   return (
     <div>
@@ -82,7 +76,7 @@ export function Plans() {
           <h1 className="text-lg font-semibold text-slate-900">Planes</h1>
           {current && (
             <p className="text-sm text-slate-500">
-              Plan actual: <span className="font-medium">{PLAN_LABELS[current.plan]}</span>
+              Plan actual: <span className="font-medium">{currentPlanName}</span>
             </p>
           )}
         </div>
@@ -112,7 +106,7 @@ export function Plans() {
 
           return (
             <Card key={plan.plan} className={isCurrent ? 'border-slate-900' : ''}>
-              <p className="text-sm font-medium text-slate-900">{PLAN_LABELS[plan.plan]}</p>
+              <p className="text-sm font-medium text-slate-900">{plan.name}</p>
               <p className="mt-1 text-2xl font-semibold text-slate-900">
                 Bs {price}
                 <span className="text-sm font-normal text-slate-400">

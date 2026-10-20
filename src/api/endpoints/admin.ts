@@ -49,6 +49,45 @@ export interface AdminPayment {
   paid_at: string
 }
 
+export interface AdminPlanPromotion {
+  id: number
+  plan_id: number
+  name: string
+  monthly_price_usd: number | null
+  annual_price_usd: number | null
+  monthly_price_bob: number | null
+  annual_price_bob: number | null
+  predictions_per_day: number | null
+  starts_at: string | null
+  ends_at: string | null
+  is_active: boolean
+}
+
+export interface AdminPlan {
+  id: number
+  slug: string
+  name: string
+  monthly_price_usd: number | null
+  annual_price_usd: number | null
+  monthly_price_bob: number | null
+  annual_price_bob: number | null
+  stripe_price_id_monthly: string | null
+  stripe_price_id_annual: string | null
+  tournament_limit: number
+  members_per_group: number
+  predictions_per_day: number
+  external_leagues: string[] | null
+  is_active: boolean
+  sort_order: number
+  promotions?: AdminPlanPromotion[]
+}
+
+export type AdminPlanPayload = Partial<
+  Omit<AdminPlan, 'id' | 'promotions'>
+> & { slug?: string }
+
+export type AdminPlanPromotionPayload = Partial<Omit<AdminPlanPromotion, 'id' | 'plan_id'>>
+
 export const adminApi = {
   users: (params: { email?: string; role?: string; page?: number } = {}) =>
     apiClient.get<AdminPaginated<AdminUser>>('/admin/users', { params }).then((r) => r.data),
@@ -82,4 +121,22 @@ export const adminApi = {
 
   payments: (params: { status?: string; page?: number } = {}) =>
     apiClient.get<AdminPaginated<AdminPayment>>('/admin/payments', { params }).then((r) => r.data),
+
+  plans: () => apiClient.get<{ data: AdminPlan[] }>('/admin/plans').then((r) => r.data.data),
+
+  createPlan: (payload: AdminPlanPayload) =>
+    apiClient.post<{ data: AdminPlan }>('/admin/plans', payload).then((r) => r.data.data),
+
+  updatePlan: (planId: number, payload: AdminPlanPayload) =>
+    apiClient.patch<{ data: AdminPlan }>(`/admin/plans/${planId}`, payload).then((r) => r.data.data),
+
+  createPlanPromotion: (planId: number, payload: AdminPlanPromotionPayload) =>
+    apiClient
+      .post<{ data: AdminPlanPromotion }>(`/admin/plans/${planId}/promotions`, payload)
+      .then((r) => r.data.data),
+
+  updatePlanPromotion: (planId: number, promotionId: number, payload: AdminPlanPromotionPayload) =>
+    apiClient
+      .patch<{ data: AdminPlanPromotion }>(`/admin/plans/${planId}/promotions/${promotionId}`, payload)
+      .then((r) => r.data.data),
 }

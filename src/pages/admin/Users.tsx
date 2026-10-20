@@ -1,16 +1,18 @@
 import { useState } from 'react'
-import { useAdminUsers, useResetUserPassword, useToggleUserSuspended, useUpdateAdminUser } from '@/hooks/useAdmin'
+import { useAdminUsers, useAdminPlans, useResetUserPassword, useToggleUserSuspended, useUpdateAdminUser } from '@/hooks/useAdmin'
 import { useToastStore } from '@/store/toastStore'
 import { confirmAction } from '@/lib/confirmAction'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import type { AdminUser } from '@/api/endpoints/admin'
 
-const TIERS = ['free', 'predictor', 'pro', 'premium'] as const
-
 export function Users() {
   const [email, setEmail] = useState('')
   const { data, isLoading } = useAdminUsers({ email: email || undefined })
+  // Slugs administrables desde /admin/plans (20/10/2026) — antes una lista
+  // fija de 4, un plan nuevo no aparecía acá sin deploy.
+  const { data: plans } = useAdminPlans()
+  const tiers = plans?.map((p) => p.slug) ?? ['free', 'predictor', 'pro', 'premium']
   const updateUser = useUpdateAdminUser()
   const resetPassword = useResetUserPassword()
   const toggleSuspended = useToggleUserSuspended()
@@ -78,7 +80,7 @@ export function Users() {
                     onChange={(e) => handleTierChange(user, e.target.value)}
                     className="rounded border border-slate-200 px-2 py-1 text-xs"
                   >
-                    {TIERS.map((t) => (
+                    {tiers.map((t) => (
                       <option key={t} value={t}>{t}</option>
                     ))}
                   </select>
